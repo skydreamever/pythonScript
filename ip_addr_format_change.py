@@ -17,8 +17,5 @@ def print_ipaddress(ip_address):
 		real_ip_addr = socket.inet_aton(ip_address)#127.0.0.1 to 7f000001
 		print("IP Address After Change:%s") % binascii.hexlify(real_ip_addr)
 
-print_ipaddress('7f000001')
-
-
-#if __name__ == '__main__':#只有在main中执行的时候执行下面这句话，实际上只有单独调用这个脚本的时候才会执行下面的方法，其他情况下不会执行
-#	print_ipaddress(sys.argv[1])
+if __name__ == '__main__':#只有在main中执行的时候执行下面这句话，实际上只有单独调用这个脚本的时候才会执行下面的方法，其他情况下不会执行
+	print_ipaddress(sys.argv[1])
