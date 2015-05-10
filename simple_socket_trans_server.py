@@ -11,8 +11,26 @@ backlog = 5
 
 def echo_server(port):
 	sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	#第一个是只通过网络进行通信，第二个是TCP协议
 	sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-	#这里加一句注释，然后如果有时间查一下setsockopt参数的意思
+	#设置允许该端口断开之后能够重新使用改端口
 	server_address = (host,port)
 	sock.bind(server_address)
-	
+        sock.listen(backlog)#允许服务端同时相应的最大连接数
+        while True:
+                print "Waiting to receive message from client"
+                client, address = sock.accept()
+                data = client.recv(data_payload)
+                if data:
+                        print "Data: %s" % data
+                        client.send(data)
+                        print "Send %s bytes back to %s" % (data,address)
+                client.close()
+
+if __name__ == '__main__':
+        parser = argparse.ArgumentParser(description="Socket Connect Test")
+        parser.add_argument('--port',action="store",dest='port',type=int,required=False)
+        given_args = parser.parse_args()
+        port = given_args.port
+        echo_server(port)
+        
