@@ -6,7 +6,6 @@ import sys
 import argparse
 
 def main():
-	
 	parser = argparse.ArgumentParser(description="Socket Connect Test")
 	parser.add_argument('--host',action="store",dest='host',required=False)
 	parser.add_argument('--port',action="store",dest='port',type=int,required=False)
@@ -16,15 +15,11 @@ def main():
 	host = given_args.host
 	port = given_args.port
 	filename = given_args.file
-
 	try:
 		s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		s.connect((host,port))
 		if len("%s" % filename) != 0:
-			s.sendall("GET /%s HTTP/1.1\r\n\r\n" % filename)
-		else:
-			s.sendall("GET / HTTP/1.1\r\n\r\n")
-
+			s.sendall("GET /%s HTTP/1.1\r\nHOST:%s\r\n\r\n" % (filename,host))
 		while 1:
 			buf = s.recv(2048)
 			if len(buf) == 0:
