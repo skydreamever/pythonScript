@@ -16,7 +16,7 @@ def echo_server(port):
 	#设置允许该端口断开之后能够重新使用改端口
 	server_address = (host,port)
 	sock.bind(server_address)
-        sock.listen(backlog)#允许服务端同时相应的最大连接数
+        sock.listen(backlog)#允许服务端同时相应的最大连接数(实际上只是能够同时连接入5个，但是并不能同时处理5个echo请求，就是同时对5客户端个进行回显操作)
         while True:
                 print "Waiting to receive message from client"
                 client, address = sock.accept()
