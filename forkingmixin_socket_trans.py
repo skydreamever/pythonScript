@@ -7,7 +7,7 @@ import threading
 import SocketServer
 
 SERVER_HOST = 'localhost'
-SERVER_PORT = 0
+SERVER_PORT = 0#这里设置为0可以使得server进行随机的端口监听
 BUF_SIZE = 1024
 ECHO_MSG = 'Hello echo server'
 
@@ -23,7 +23,7 @@ class ForkingClient():
         print 'Send %d characters' % send_data_length
         response = self.sock.recv(BUF_SIZE)
         print "PID %s Received:%s" % (current_process_id,response[5:])
-    
+
     def shutdown(self):
         self.sock.close()
 
@@ -61,5 +61,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-        
+
+
