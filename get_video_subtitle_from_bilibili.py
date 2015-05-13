@@ -202,7 +202,7 @@ def biligrab(url, *, debug=False, verbose=False, media=None, cookie=None, qualit
         command_line = ['mpv', '--autofit', '950x540']
         if mpv_version_gte_0_6:
             command_line += ['--cache-file', 'TMP']
-        if increase_fps and mpv_version_gte_0_6:  # Drop frames at vo side but not at decoder side to prevent A/V sync issues
+        if increase_fps and mpv_version_gte_0_6:  # 实际上应该是针对流来讲的，使用这个命令会使解码器尝试解码所有的针，但是在vo上面并不现实，也就是让解码器在界面中继续解码，但是允许vo进行丢帧（解码器不丢），能有效防止同步无法解码等问题，vo暂时可以理解为进行播放的引擎，这里应该使用的时opengl完成的
             command_line += ['--framedrop', 'vo']
         command_line += ['--http-header-fields', 'User-Agent: '+USER_AGENT_PLAYER.replace(',', '\\,')]
         if mpv_version_gte_0_6:
@@ -211,11 +211,13 @@ def biligrab(url, *, debug=False, verbose=False, media=None, cookie=None, qualit
             command_line += ['--merge-files']
         if mpv_version_gte_0_4:
             command_line += ['--no-video-aspect', '--sub-ass', '--sub-file', comment_out.name]
+            #这个方法使得不通过video的信息获得长宽比信息，并且假设视频中又正方形的像素
         else:
             command_line += ['--no-aspect', '--ass', '--sub', comment_out.name]
         if increase_fps:
             if mpv_version_gte_0_6:
-                command_line += ['--vf', 'lavfi="fps=fps=60:round=down"']
+                command_line += ['--vf', 'lavfi="fps=fps=60:round=down"']          
+                #这个是libavfilter，是ffmpeg中的参数，使得帧数能够达到60fps，对视频流能够完全使用，防止视频fps过高无法播放
             else:  # Versions < 0.6 have an A/V sync related issue
                 command_line += ['--vf', 'lavfi="fps=fps=50:round=down"']
         command_line += mpvflags
@@ -367,6 +369,7 @@ def check_env(debug=False):
 def log_command(command_line):
     '''Log the command line to be executed, escaping correctly
     '''
+    logging.info(command_line)
     logging.debug('Executing: '+' '.join('\''+i+'\'' if ' ' in i or '?' in i or '&' in i or '"' in i else i for i in command_line))
 
 
